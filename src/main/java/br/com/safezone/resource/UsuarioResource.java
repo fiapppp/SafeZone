@@ -1,6 +1,7 @@
 package br.com.safezone.resource;
 
 import br.com.safezone.dto.UsuarioResponseDTO;
+import br.com.safezone.model.Localizacao;
 import br.com.safezone.model.Perfil;
 import br.com.safezone.model.Usuario;
 import br.com.safezone.security.CurrentUser;
@@ -123,12 +124,13 @@ public class UsuarioResource {
     }
 
     /**
-     * Converte entidade Usuario para DTO, recuperando Perfil do banco
+     * Converte entidade Usuario para DTO, recuperando Perfil,Localizacao do banco
      */
     private UsuarioResponseDTO toDTO(Usuario u) {
         UsuarioResponseDTO dto = new UsuarioResponseDTO();
         dto.id = u.id;
         dto.nome = u.nome;
+        dto.cpf = u.cpf;
         dto.email = u.email;
         dto.telefone = u.telefone;
         dto.dataNascimento = u.dataNascimento;
@@ -139,6 +141,8 @@ public class UsuarioResource {
                 perfil.id,
                 perfil.nomePerfil
         );
+        // Carrega Localizacao completa a partir do ID
+        dto.localizacao = Localizacao.findById(u.localizacao.id);
         return dto;
     }
 }

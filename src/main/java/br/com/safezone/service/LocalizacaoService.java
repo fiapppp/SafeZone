@@ -22,7 +22,7 @@ public class LocalizacaoService {
 
     @Transactional
     public Localizacao criar(Localizacao localizacao) {
-        if (localizacao.nomeEstacao == null || localizacao.nomeEstacao.trim().isEmpty()) {
+        if (localizacao.cidade == null || localizacao.cidade.trim().isEmpty()) {
             throw new IllegalArgumentException("Nome da estação é obrigatório");
         }
 
@@ -34,11 +34,14 @@ public class LocalizacaoService {
     public Localizacao atualizar(Long id, Localizacao localizacaoAtualizada) {
         Localizacao localizacaoExistente = buscarPorId(id);
 
-        localizacaoExistente.nomeEstacao = localizacaoAtualizada.nomeEstacao;
-        localizacaoExistente.linha = localizacaoAtualizada.linha;
-        localizacaoExistente.plataforma = localizacaoAtualizada.plataforma;
-        localizacaoExistente.latitudeLongitude = localizacaoAtualizada.latitudeLongitude;
         localizacaoExistente.status = localizacaoAtualizada.status;
+        localizacaoExistente.logradouro = localizacaoAtualizada.logradouro;
+        localizacaoExistente.bairro = localizacaoAtualizada.bairro;
+        localizacaoExistente.cidade = localizacaoAtualizada.cidade;
+        localizacaoExistente.estado = localizacaoAtualizada.estado;
+        localizacaoExistente.CEP = localizacaoAtualizada.CEP;
+        localizacaoExistente.numero = localizacaoAtualizada.numero;
+        localizacaoExistente.latitudeLongitude = localizacaoAtualizada.latitudeLongitude;
 
         return localizacaoExistente;
     }

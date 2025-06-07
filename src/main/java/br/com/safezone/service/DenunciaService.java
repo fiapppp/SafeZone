@@ -32,11 +32,11 @@ public class DenunciaService {
             dto.prioridade = d.prioridade;
             // categoria
             Categoria cat = d.categoria;
-            dto.categoria = new CategoriaDTO(cat.id, cat.descricao);
+            dto.categoria = new CategoriaDTO(cat.id, cat.nome, cat.descricao);
             // localizacao
             Localizacao loc = d.localizacao;
             dto.localizacao = new LocalizacaoDTO(
-                    loc.id, loc.nomeEstacao, loc.linha, loc.plataforma, loc.latitudeLongitude
+                    loc.id, loc.logradouro, loc.bairro, loc.cidade, loc.estado,loc.CEP, loc.numero, loc.latitudeLongitude
             );
             // evidencias: usar find().list() para manter tipagem
             List<Evidencia> evidenciasEntity = Evidencia.find("denuncia.id", d.id).list();

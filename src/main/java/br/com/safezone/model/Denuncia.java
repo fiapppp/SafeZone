@@ -39,7 +39,7 @@ public class Denuncia extends PanacheEntity {
 
     @ManyToOne
     @JoinColumn(name = "id_grupoDenuncia")
-    public GrupoDenuncia grupoDenuncia;
+    public Ocorrencia grupoDenuncia;
 
     @ManyToOne
     @JoinColumn(name = "id_localizacao")

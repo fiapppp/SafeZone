@@ -2,17 +2,23 @@ package br.com.safezone.dto;
 
 public class LocalizacaoDTO {
     public Long id;
-    public String nomeEstacao;
-    public String linha;
-    public String plataforma;
+    public String logradouro;
+    public String bairro;
+    public String cidade;
+    public String estado;
+    public String cep;
+    public int numero;
     public String latitudeLongitude;
 
     public LocalizacaoDTO() {}
-    public LocalizacaoDTO(Long id, String nomeEstacao, String linha, String plataforma, String latitudeLongitude) {
+    public LocalizacaoDTO(Long id, String logradouro, String bairro, String cidade, String estado, String cep, int numero, String latitudeLongitude) {
         this.id = id;
-        this.nomeEstacao = nomeEstacao;
-        this.linha = linha;
-        this.plataforma = plataforma;
+        this.logradouro = logradouro;
+        this.bairro = bairro;
+        this.cidade = cidade;
+        this.estado = estado;
+        this.cep = cep;
+        this.numero = numero;
         this.latitudeLongitude = latitudeLongitude;
     }
 }

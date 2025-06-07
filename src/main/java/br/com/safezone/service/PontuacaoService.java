@@ -39,11 +39,6 @@ public class PontuacaoService {
         pontos.denuncia = denuncia;
         pontos.status = 1;
         pontos.persist();
-
-        // atualiza pontuação total do usuário
-        Usuario usuario = denuncia.usuario;
-        usuario.pontuacaoTotal = usuario.pontuacaoTotal + pontosCalculados;
-        usuario.persist();
     }
 
     private int calcularPontos(Denuncia denuncia) {

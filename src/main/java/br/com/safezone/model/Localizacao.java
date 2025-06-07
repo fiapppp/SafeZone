@@ -5,18 +5,28 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "LOCALIZACAO")
 public class Localizacao extends PanacheEntity {
-    @Column(name = "NOME_ESTACAO", nullable = false)
-    public String nomeEstacao;
+    @Column(name = "STATUS")
+    public Integer status;
 
-    @Column(name = "LINHA")
-    public String linha;
+    @Column(name = "LOGRADOURO")
+    public String logradouro;
 
-    @Column(name = "PLATAFORMA")
-    public String plataforma;
+    @Column(name = "BAIRRO")
+    public String bairro;
+
+    @Column(name = "CIDADE")
+    public String cidade;
+
+    @Column(name = "ESTADO")
+    public String estado;
+
+    @Column(name = "CEP")
+    public String CEP;
+
+    @Column(name = "NUMERO")
+    public Integer numero;
 
     @Column(name = "LATITUDE_LONGITUDE")
     public String latitudeLongitude;
 
-    @Column(name = "STATUS")
-    public Integer status;
 }

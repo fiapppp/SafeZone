@@ -16,12 +16,6 @@ public class ResgateService {
         if (recompensa == null || recompensa.status == 0) {
             throw new IllegalArgumentException("Recompensa inválida ou inativa");
         }
-        if (usuario.pontuacaoTotal < recompensa.custoPontos) {
-            throw new IllegalStateException("Pontos insuficientes");
-        }
-        // Deduz pontos e persiste
-        usuario.pontuacaoTotal -= recompensa.custoPontos;
-        usuario.persist();
 
         // Cria registro de resgate
         ResgateRecompensa resgate = new ResgateRecompensa();
