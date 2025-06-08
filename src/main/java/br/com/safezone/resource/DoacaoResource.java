@@ -1,8 +1,8 @@
 package br.com.safezone.resource;
 
-import br.com.safezone.dto.RecompensaDTO;
+import br.com.safezone.dto.DoacaoDTO;
 import br.com.safezone.security.CurrentUser;
-import br.com.safezone.service.RecompensaService;
+import br.com.safezone.service.DoacaoService;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -13,13 +13,13 @@ import java.util.List;
 import static jakarta.ws.rs.core.Response.Status.CREATED;
 import static jakarta.ws.rs.core.Response.Status.NO_CONTENT;
 
-@Path("/api/recompensa")
+@Path("/api/doacao")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-public class RecompensaResource {
+public class DoacaoResource {
 
     @Inject
-    RecompensaService service;
+    DoacaoService service;
 
     @Inject
     CurrentUser currentUser;
@@ -27,7 +27,7 @@ public class RecompensaResource {
     @GET
     @Path("/listarAtivas")
     @RolesAllowed({"cidadao", "funcionario", "admin"})
-    public List<RecompensaDTO> listarAtivas() {
+    public List<DoacaoDTO> listarAtivas() {
         return service.listarAtivas();
     }
 
@@ -35,9 +35,9 @@ public class RecompensaResource {
     @Transactional
     @Path("/criar")
     @RolesAllowed({"funcionario", "admin"})
-    public Response criar(RecompensaDTO dto) {
+    public Response criar(DoacaoDTO dto) {
         var usuario = currentUser.get();
-        RecompensaDTO criada = service.criar(dto, usuario);
+        DoacaoDTO criada = service.criar(dto, usuario);
         return Response.status(CREATED).entity(criada).build();
     }
 
@@ -45,8 +45,8 @@ public class RecompensaResource {
     @Path("/atualizar/{id}")
     @Transactional
     @RolesAllowed({"funcionario", "admin"})
-    public Response atualizar(@PathParam("id") Long id, RecompensaDTO dto) {
-        RecompensaDTO updated = service.atualizar(id, dto);
+    public Response atualizar(@PathParam("id") Long id, DoacaoDTO dto) {
+        DoacaoDTO updated = service.atualizar(id, dto);
         return Response.ok(updated).build();
     }
 

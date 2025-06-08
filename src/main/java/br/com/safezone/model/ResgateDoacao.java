@@ -5,12 +5,12 @@ import jakarta.persistence.*;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "ResgateRecompensa")
-public class ResgateRecompensa extends PanacheEntity {
+@Table(name = "Resgate_Doacao")
+public class ResgateDoacao extends PanacheEntity {
     @Column(name = "data_resgate", nullable = false)
     public LocalDate dataResgate;
 
-    @Column(nullable = false)
+    @Column(name = "status", nullable = false)
     public Integer status;
 
     @ManyToOne
@@ -18,6 +18,6 @@ public class ResgateRecompensa extends PanacheEntity {
     public Usuario usuario;
 
     @ManyToOne
-    @JoinColumn(name = "id_recompensa", nullable = false)
-    public Recompensa recompensa;
+    @JoinColumn(name = "id_doacao", nullable = false)
+    public Doacao recompensa;
 }

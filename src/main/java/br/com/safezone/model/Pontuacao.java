@@ -17,9 +17,6 @@ public class Pontuacao extends PanacheEntity {
     @Column(name = "STATUS")
     public Integer status;
 
-    @Column(name = "DATA_ATUALIZACAO")
-    public LocalDate dataAtualizacao;
-
     @ManyToOne
     @JoinColumn(name = "ID_DENUNCIA", nullable = false)
     public Denuncia denuncia;

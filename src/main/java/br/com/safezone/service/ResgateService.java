@@ -1,8 +1,8 @@
 package br.com.safezone.service;
 
-import br.com.safezone.model.ResgateRecompensa;
+import br.com.safezone.model.ResgateDoacao;
 import br.com.safezone.model.Usuario;
-import br.com.safezone.model.Recompensa;
+import br.com.safezone.model.Doacao;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
 import java.time.LocalDate;
@@ -11,14 +11,14 @@ import java.time.LocalDate;
 public class ResgateService {
 
     @Transactional
-    public ResgateRecompensa resgatarPontos(Usuario usuario, Long recompensaId) {
-        Recompensa recompensa = Recompensa.findById(recompensaId);
+    public ResgateDoacao resgatarPontos(Usuario usuario, Long recompensaId) {
+        Doacao recompensa = Doacao.findById(recompensaId);
         if (recompensa == null || recompensa.status == 0) {
-            throw new IllegalArgumentException("Recompensa inválida ou inativa");
+            throw new IllegalArgumentException("Doacao inválida ou inativa");
         }
 
         // Cria registro de resgate
-        ResgateRecompensa resgate = new ResgateRecompensa();
+        ResgateDoacao resgate = new ResgateDoacao();
         resgate.dataResgate = LocalDate.now();
         resgate.status = 1;
         resgate.usuario = usuario;

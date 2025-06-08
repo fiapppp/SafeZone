@@ -3,9 +3,12 @@ import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "TIPORECOMPENSA")
-public class TipoRecompensa extends PanacheEntity {
-    @Column(name = "DESCRICAO", nullable = false)
+@Table(name = "TIPO_DOACAO")
+public class TipoDoacao extends PanacheEntity {
+    @Column(name = "TITULO", nullable = false)
+    public String titulo;
+
+    @Column(name = "DESCRICAO")
     public String descricao;
 
     @Column(name = "STATUS")

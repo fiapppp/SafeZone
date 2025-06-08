@@ -2,7 +2,7 @@ package br.com.safezone.resource;
 
 import br.com.safezone.dto.ResgateRequestDTO;
 import br.com.safezone.dto.ResgateResponseDTO;
-import br.com.safezone.model.ResgateRecompensa;
+import br.com.safezone.model.ResgateDoacao;
 import br.com.safezone.security.CurrentUser;
 import br.com.safezone.service.ResgateService;
 import jakarta.annotation.security.RolesAllowed;
@@ -30,7 +30,7 @@ public class ResgateResource {
     @Path("/api/resgatar")
     public Response resgatar(ResgateRequestDTO dto) {
         var usuario = currentUser.get();
-        ResgateRecompensa resgate = resgateService.resgatarPontos(usuario, dto.idRecompensa);
+        ResgateDoacao resgate = resgateService.resgatarPontos(usuario, dto.idRecompensa);
         ResgateResponseDTO resp = new ResgateResponseDTO();
         resp.id = resgate.id;
         resp.dataResgate = resgate.dataResgate;

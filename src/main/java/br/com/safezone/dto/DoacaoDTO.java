@@ -1,29 +1,26 @@
 package br.com.safezone.dto;
 
-import br.com.safezone.model.Recompensa;
+import br.com.safezone.model.Doacao;
 import java.time.LocalDate;
-import java.math.BigDecimal;
 
-public class RecompensaDTO {
+public class DoacaoDTO {
     public Long id;
     public Integer custoPontos;
     public LocalDate dataValidade;
     public String descricao;
     public Integer quantidadeDisponivel;
-    public BigDecimal valor;
-    public Long tipoRecompensaId;
+    public Long tipoDoacaoId;
     public Integer status;
 
-    public RecompensaDTO() {}
+    public DoacaoDTO() {}
 
-    public RecompensaDTO(Recompensa r) {
+    public DoacaoDTO(Doacao r) {
         this.id = r.id;
         this.custoPontos = r.custoPontos;
         this.dataValidade = r.dataValidade;
         this.descricao = r.descricao;
         this.quantidadeDisponivel = r.quantidadeDisponivel;
-        this.valor = r.valor;
-        this.tipoRecompensaId = r.tipoRecompensa.id;
+        this.tipoDoacaoId = r.tipoDoacao.id;
         this.status = r.status;
     }
 }
