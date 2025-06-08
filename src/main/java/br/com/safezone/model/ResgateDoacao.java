@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "Resgate_Doacao")
+@Table(name = "ResgateDoacao")
 public class ResgateDoacao extends PanacheEntity {
     @Column(name = "data_resgate", nullable = false)
     public LocalDate dataResgate;
