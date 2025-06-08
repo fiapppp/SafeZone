@@ -1,4 +1,5 @@
 package br.com.safezone.model;
+import br.com.safezone.dto.UsuarioDTO;
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import jakarta.persistence.*;
 

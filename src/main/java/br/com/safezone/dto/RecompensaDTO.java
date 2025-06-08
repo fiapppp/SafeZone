@@ -11,7 +11,6 @@ public class RecompensaDTO {
     public String descricao;
     public Integer quantidadeDisponivel;
     public BigDecimal valor;
-    public Long parceiroId;
     public Long tipoRecompensaId;
     public Integer status;
 
@@ -24,7 +23,6 @@ public class RecompensaDTO {
         this.descricao = r.descricao;
         this.quantidadeDisponivel = r.quantidadeDisponivel;
         this.valor = r.valor;
-        this.parceiroId = r.parceiro.id;
         this.tipoRecompensaId = r.tipoRecompensa.id;
         this.status = r.status;
     }

@@ -16,6 +16,12 @@ public class DenunciaService {
     @Inject
     PontuacaoService pontuacaoService;
 
+    @Inject
+    LocalizacaoService localizacaoService;
+
+    @Inject
+    OcorrenciaService ocorrenciaService;
+
     /**
      * Retorna todas denúncias de um usuário, com objetos associados.
      */
@@ -26,7 +32,6 @@ public class DenunciaService {
             dto.id = d.id;
             dto.dataDenuncia = d.dataDenuncia;
             dto.descricao = d.descricao;
-            dto.informacaoAdicional = d.informacaoAdicional;
             dto.status = d.status;
             dto.dataConclusao = d.dataConclusao;
             dto.prioridade = d.prioridade;
@@ -38,45 +43,73 @@ public class DenunciaService {
             dto.localizacao = new LocalizacaoDTO(
                     loc.id, loc.logradouro, loc.bairro, loc.cidade, loc.estado,loc.CEP, loc.numero, loc.latitudeLongitude
             );
-            // evidencias: usar find().list() para manter tipagem
-            List<Evidencia> evidenciasEntity = Evidencia.find("denuncia.id", d.id).list();
-            List<EvidenciaDTO> evDTOs = evidenciasEntity.stream()
-                    .map(ev -> new EvidenciaDTO(ev.id, ev.tipoEvidencia, ev.arquivo))
-                    .collect(Collectors.toList());
-            dto.evidencias = evDTOs;
             return dto;
         }).collect(Collectors.toList());
     }
 
     @Transactional
-    public Denuncia criarComEvidencias(DenunciaDTO dto, Usuario usuario) {
+    public Denuncia criarDenunciaCompleta(DenunciaDTO dto, Usuario usuario) {
+
         // Monta a entidade Denuncia
         Denuncia denuncia = new Denuncia();
         denuncia.dataDenuncia = dto.dataDenuncia != null ? dto.dataDenuncia : LocalDate.now();
+        denuncia.titulo = dto.titulo;
         denuncia.descricao = dto.descricao;
-        denuncia.informacaoAdicional = dto.informacaoAdicional;
-        denuncia.prioridade = dto.prioridade != null ? dto.prioridade : 0;
-        denuncia.status = 0;
-        // definir usuário autenticado
+        denuncia.prioridade = dto.prioridade != null && dto.prioridade > 0 ? dto.prioridade : 0;
+        if (dto.idOcorrencia > 0)
+            denuncia.ocorrencia = ocorrenciaService.buscarPorId(dto.idOcorrencia);
+        else
+            throw new IllegalArgumentException("Denúncia não pode ser aberta sem uma ocorrencia");
+
+        // definir usuário autenticado como autor da denuncia
         denuncia.usuario = usuario;
-        // relacionamentos de categoria e localizacao
+
         denuncia.categoria = Categoria.findById(dto.idCategoria);
-        denuncia.localizacao = Localizacao.findById(dto.idLocalizacao);
+
+        // inseri localização da Denuncia
+        Localizacao localizacao = new Localizacao();
+        localizacao.CEP = dto.CEP;
+        localizacao.logradouro = dto.logradouro;
+        localizacao.bairro = dto.bairro;
+        localizacao.cidade = dto.cidade;
+        localizacao.estado = dto.estado;
+        localizacao.numero = dto.numero;
+        Localizacao localizacaoCriada = localizacaoService.criar(localizacao);
+
+        denuncia.localizacao = localizacaoCriada;
+
+        CidadaoPrejudicadoOUApoiador(denuncia);
 
         // persiste denúncia
         denuncia.persist();
 
-        // persiste todas evidências vinculadas, se houver
-        if (dto.evidencia != null) {
-            for (var evDto : dto.evidencia) {
-                Evidencia ev = new Evidencia();
-                ev.tipoEvidencia = evDto.tipoEvidencia;
-                ev.arquivo = evDto.arquivo;
-                ev.denuncia = denuncia;
-                ev.persist();
-            }
-        }
         return denuncia;
+    }
+
+    public void CidadaoPrejudicadoOUApoiador(Denuncia denuncia) {
+        boolean prejudicado;
+        switch (denuncia.ocorrencia.raioAuxilio){
+            case "LOGRADOURO":
+                prejudicado = denuncia.ocorrencia.localizacao.logradouro.equals(denuncia.usuario.localizacao.logradouro);
+            case "BAIRRO":
+                prejudicado = denuncia.ocorrencia.localizacao.bairro.equals(denuncia.usuario.localizacao.bairro);
+                break;
+            case "CIDADE":
+                prejudicado = denuncia.ocorrencia.localizacao.cidade.equals(denuncia.usuario.localizacao.cidade);
+                break;
+            case "ESTADO":
+                prejudicado = denuncia.ocorrencia.localizacao.estado.equals(denuncia.usuario.localizacao.estado);
+                break;
+            default:
+                prejudicado = false;
+                break;
+        }
+
+        if(prejudicado)
+            denuncia.cidadao_prejudicado = denuncia.usuario;
+        else
+            denuncia.cidadao_apoidador = denuncia.usuario;
+
     }
 
     /**
@@ -121,19 +154,6 @@ public class DenunciaService {
         if (denuncia == null) {
             throw new IllegalArgumentException("Denúncia não encontrada: " + id);
         }
-        // Registro do histórico
-        HistoricoDenuncia hist = new HistoricoDenuncia();
-        hist.denuncia = denuncia;
-        hist.dataAlteracao = LocalDate.now();
-        hist.statusAnterior = denuncia.status;
-        hist.statusAtual = novoStatus;
-        hist.acao = observacao;
-        Usuario responsavel = Usuario.findById(idUsuarioResponsavel);
-        if (responsavel == null) {
-            throw new IllegalArgumentException("Usuário responsável não encontrado: " + idUsuarioResponsavel);
-        }
-        hist.usuario = responsavel;
-        hist.persist();
 
         // Atualização da denúncia
         denuncia.status = novoStatus;

@@ -1,5 +1,6 @@
 package br.com.safezone.resource;
 
+import br.com.safezone.dto.UsuarioDTO;
 import br.com.safezone.dto.UsuarioResponseDTO;
 import br.com.safezone.model.Localizacao;
 import br.com.safezone.model.Perfil;
@@ -31,7 +32,7 @@ public class UsuarioResource {
      */
     @POST
     @Path("/criar")
-    public Response criarUsuario(Usuario usuario) {
+    public Response criarUsuario(UsuarioDTO usuario) {
         try {
             Usuario novoUsuario = usuarioService.criar(usuario);
             return Response.status(Response.Status.CREATED)

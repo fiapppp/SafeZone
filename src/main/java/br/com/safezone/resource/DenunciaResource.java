@@ -36,7 +36,7 @@ public class DenunciaResource {
         if (usuario == null) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
-        Denuncia criada = service.criarComEvidencias(dto, usuario);
+        Denuncia criada = service.criarDenunciaCompleta(dto, usuario);
         return Response.status(Response.Status.CREATED)
                 .entity(criada)
                 .build();

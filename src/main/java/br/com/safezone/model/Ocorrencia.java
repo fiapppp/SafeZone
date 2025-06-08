@@ -1,4 +1,5 @@
 package br.com.safezone.model;
+import br.com.safezone.dto.OcorrenciaDTO;
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import jakarta.persistence.*;
 import java.time.LocalDate;
@@ -33,5 +34,7 @@ public class Ocorrencia extends PanacheEntity {
     @ManyToOne
     @JoinColumn(name = "ID_CATEGORIA")
     public Categoria categoria;
+
 }
+
 

@@ -28,5 +28,4 @@ public class Localizacao extends PanacheEntity {
 
     @Column(name = "LATITUDE_LONGITUDE")
     public String latitudeLongitude;
-
 }

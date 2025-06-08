@@ -28,8 +28,4 @@ public class Recompensa extends PanacheEntity {
     @ManyToOne
     @JoinColumn(name = "id_tipo_recompensa")
     public TipoRecompensa tipoRecompensa;
-
-    @ManyToOne
-    @JoinColumn(name = "id_parceiro")
-    public Parceiro parceiro;
 }

@@ -23,7 +23,7 @@ public class LocalizacaoService {
     @Transactional
     public Localizacao criar(Localizacao localizacao) {
         if (localizacao.cidade == null || localizacao.cidade.trim().isEmpty()) {
-            throw new IllegalArgumentException("Nome da estação é obrigatório");
+            throw new IllegalArgumentException("Nome da cidade é obrigatório");
         }
 
         localizacao.persist();

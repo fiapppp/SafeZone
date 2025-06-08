@@ -1,7 +1,11 @@
 package br.com.safezone.service;
 
+import br.com.safezone.dto.UsuarioDTO;
+import br.com.safezone.model.Localizacao;
+import br.com.safezone.model.Perfil;
 import br.com.safezone.model.Usuario;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.NotFoundException;
 //import io.quarkus.elytron.security.common.BcryptUtil;
@@ -10,6 +14,9 @@ import java.util.List;
 
 @ApplicationScoped
 public class UsuarioService {
+
+    @Inject
+    LocalizacaoService localizacaoService;
 
     public List<Usuario> listarTodos() {
         return Usuario.listAll();
@@ -22,19 +29,45 @@ public class UsuarioService {
     }
 
     @Transactional
-    public Usuario criar(Usuario usuario) {
-        if (usuario.nome == null || usuario.nome.trim().isEmpty()) {
+    public Usuario criar(UsuarioDTO usuarioDto) {
+
+        ValidaUsuario(usuarioDto);
+
+        Usuario usuarioEntity = new Usuario();
+        usuarioEntity.nome = usuarioDto.nome;
+        usuarioEntity.dataNascimento = usuarioDto.dataNascimento;
+        usuarioEntity.email = usuarioDto.email;
+        usuarioEntity.senha = usuarioDto.senha;
+        usuarioEntity.cpf = usuarioDto.cpf;
+        usuarioEntity.telefone = usuarioDto.telefone;
+        usuarioEntity.perfil = Perfil.findById(usuarioDto.perfilId);
+
+        Localizacao localizacao = new Localizacao();
+        localizacao.CEP = usuarioDto.localizacao.cep;
+        localizacao.logradouro = usuarioDto.localizacao.logradouro;
+        localizacao.bairro = usuarioDto.localizacao.bairro;
+        localizacao.cidade = usuarioDto.localizacao.cidade;
+        localizacao.estado = usuarioDto.localizacao.estado;
+        localizacao.numero = usuarioDto.localizacao.numero;
+        Localizacao localizacaoCriada = localizacaoService.criar(localizacao);
+
+        usuarioEntity.localizacao = localizacaoCriada;
+
+        usuarioEntity.persist();
+
+        return usuarioEntity;
+    }
+
+    public void ValidaUsuario(UsuarioDTO usuarioDto) {
+        if (usuarioDto.nome == null || usuarioDto.nome.trim().isEmpty()) {
             throw new IllegalArgumentException("Nome do usuário é obrigatório");
         }
-        if (usuario.email == null || usuario.email.trim().isEmpty()) {
+        if (usuarioDto.email == null || usuarioDto.email.trim().isEmpty()) {
             throw new IllegalArgumentException("Email do usuário é obrigatório");
         }
-        if (usuario.senha == null || usuario.senha.trim().isEmpty()) {
+        if (usuarioDto.senha == null || usuarioDto.senha.trim().isEmpty()) {
             throw new IllegalArgumentException("Senha do usuário é obrigatória");
         }
-
-        usuario.persist();
-        return usuario;
     }
 
     @Transactional

@@ -4,13 +4,18 @@ import java.time.LocalDate;
 import java.util.List;
 
 public class DenunciaDTO {
-    public LocalDate dataDenuncia;
+    public String titulo;
     public String descricao;
-    public String informacaoAdicional;
-    public Long idCategoria;
-    public Long idLocalizacao;
+    public LocalDate dataDenuncia;
     public Integer prioridade;
-    public List<EvidenciaDTO> evidencia;
+    public String CEP;
+    public String logradouro;
+    public String bairro;
+    public String cidade;
+    public String estado;
+    public int numero;
+    public Long idOcorrencia;
+    public Long idCategoria;
 
     public DenunciaDTO() {}
 }

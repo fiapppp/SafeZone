@@ -1,5 +1,7 @@
 package br.com.safezone.dto;
 
+import br.com.safezone.model.Localizacao;
+
 public class LocalizacaoDTO {
     public Long id;
     public String logradouro;
@@ -11,6 +13,17 @@ public class LocalizacaoDTO {
     public String latitudeLongitude;
 
     public LocalizacaoDTO() {}
+    public LocalizacaoDTO(Localizacao localizacao) {
+        this.id = localizacao.id;
+        this.logradouro = localizacao.logradouro;
+        this.bairro = localizacao.bairro;
+        this.cidade = localizacao.cidade;
+        this.estado = localizacao.estado;
+        this.cep = localizacao.CEP;
+        this.numero = localizacao.numero;
+        this.latitudeLongitude = localizacao.latitudeLongitude;
+    }
+
     public LocalizacaoDTO(Long id, String logradouro, String bairro, String cidade, String estado, String cep, int numero, String latitudeLongitude) {
         this.id = id;
         this.logradouro = logradouro;

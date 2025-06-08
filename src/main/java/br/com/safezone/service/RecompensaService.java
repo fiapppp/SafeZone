@@ -1,7 +1,6 @@
 package br.com.safezone.service;
 
 import br.com.safezone.dto.RecompensaDTO;
-import br.com.safezone.model.Parceiro;
 import br.com.safezone.model.Recompensa;
 import br.com.safezone.model.TipoRecompensa;
 import br.com.safezone.model.Usuario;
@@ -37,7 +36,6 @@ public class RecompensaService {
         r.quantidadeDisponivel = dto.quantidadeDisponivel;
         r.valor = dto.valor;
         r.status = dto.status != null ? dto.status : 1;
-        r.parceiro = Parceiro.findById(dto.parceiroId);
         r.tipoRecompensa = TipoRecompensa.findById(dto.tipoRecompensaId);
         r.persist();
         return new RecompensaDTO(r);
@@ -58,7 +56,6 @@ public class RecompensaService {
         r.quantidadeDisponivel = dto.quantidadeDisponivel;
         r.valor = dto.valor;
         r.status = dto.status;
-        r.parceiro = Parceiro.findById(dto.parceiroId);
         r.tipoRecompensa = TipoRecompensa.findById(dto.tipoRecompensaId);
         return new RecompensaDTO(r);
     }
