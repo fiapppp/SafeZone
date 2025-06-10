@@ -2,6 +2,7 @@ package br.com.safezone.resource;
 
 import br.com.safezone.dto.LoginRequestDTO;
 import br.com.safezone.dto.LoginResponseDTO;
+import br.com.safezone.exception.ApiException;
 import br.com.safezone.model.Sessao;
 import br.com.safezone.model.Usuario;
 import jakarta.transaction.Transactional;
@@ -23,33 +24,41 @@ public class AuthResource {
     @Path("/login")
     @Transactional
     public Response login(LoginRequestDTO dto) {
-        Usuario u = Usuario.find("email", dto.email).firstResult();
-        if (u == null || !u.senha.equals(dto.senha)) {
-            return Response.status(Response.Status.UNAUTHORIZED).build();
-        }
-        // cria token
-        String token = UUID.randomUUID().toString();
-        Sessao s = new Sessao();
-        s.token = token;
-        s.usuario = u;
-        s.dataExpiracao = LocalDateTime.now().plusHours(SESSAO_DURA_HORAS);
-        s.persist();
+        try{
+            Usuario u = Usuario.find("email", dto.email).firstResult();
+            if (u == null || !u.senha.equals(dto.senha)) {
+                return Response.status(Response.Status.UNAUTHORIZED).build();
+            }
+            // cria token
+            String token = UUID.randomUUID().toString();
+            Sessao s = new Sessao();
+            s.token = token;
+            s.usuario = u;
+            s.dataExpiracao = LocalDateTime.now().plusHours(SESSAO_DURA_HORAS);
+            s.persist();
 
-        LoginResponseDTO resp = new LoginResponseDTO();
-        resp.token = token;
-        resp.expiraEm = s.dataExpiracao.atZone(java.time.ZoneId.systemDefault()).toEpochSecond();
-        return Response.ok(resp).build();
+            LoginResponseDTO resp = new LoginResponseDTO();
+            resp.token = token;
+            resp.expiraEm = s.dataExpiracao.atZone(java.time.ZoneId.systemDefault()).toEpochSecond();
+            return Response.ok(resp).build();
+        }catch (Exception e) {
+            throw new ApiException(e.getMessage(), Response.Status.BAD_REQUEST);
+        }
     }
 
     @POST
     @Path("/logout")
     @Transactional
     public Response logout(@HeaderParam("Authorization") String authHeader) {
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            return Response.status(Response.Status.BAD_REQUEST).build();
+        try{
+            if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+                return Response.status(Response.Status.BAD_REQUEST).build();
+            }
+            String token = authHeader.substring(7);
+            Sessao.delete("token", token);
+            return Response.noContent().build();
+        }catch (Exception e) {
+            throw new ApiException(e.getMessage(), Response.Status.BAD_REQUEST);
         }
-        String token = authHeader.substring(7);
-        Sessao.delete("token", token);
-        return Response.noContent().build();
     }
 }

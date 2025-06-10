@@ -1,6 +1,7 @@
 package br.com.safezone.resource;
 
 import br.com.safezone.dto.DoacaoDTO;
+import br.com.safezone.exception.ApiException;
 import br.com.safezone.security.CurrentUser;
 import br.com.safezone.service.DoacaoService;
 import jakarta.annotation.security.RolesAllowed;
@@ -36,9 +37,13 @@ public class DoacaoResource {
     @Path("/criar")
     @RolesAllowed({"funcionario", "admin"})
     public Response criar(DoacaoDTO dto) {
-        var usuario = currentUser.get();
-        DoacaoDTO criada = service.criar(dto, usuario);
-        return Response.status(CREATED).entity(criada).build();
+        try {
+            var usuario = currentUser.get();
+            DoacaoDTO criada = service.criar(dto, usuario);
+            return Response.status(CREATED).entity(criada).build();
+        }catch (Exception e) {
+            throw new ApiException(e.getMessage(), Response.Status.BAD_REQUEST);
+        }
     }
 
     @PUT
@@ -46,8 +51,12 @@ public class DoacaoResource {
     @Transactional
     @RolesAllowed({"funcionario", "admin"})
     public Response atualizar(@PathParam("id") Long id, DoacaoDTO dto) {
-        DoacaoDTO updated = service.atualizar(id, dto);
-        return Response.ok(updated).build();
+        try {
+            DoacaoDTO updated = service.atualizar(id, dto);
+            return Response.ok(updated).build();
+        }catch (Exception e) {
+            throw new ApiException(e.getMessage(), Response.Status.BAD_REQUEST);
+        }
     }
 
     @DELETE
@@ -55,7 +64,11 @@ public class DoacaoResource {
     @Transactional
     @RolesAllowed({"funcionario", "admin"})
     public Response deletar(@PathParam("id") Long id) {
-        service.excluir(id);
-        return Response.status(NO_CONTENT).build();
+        try{
+            service.excluir(id);
+            return Response.status(NO_CONTENT).build();
+        }catch (Exception e) {
+            throw new ApiException(e.getMessage(), Response.Status.BAD_REQUEST);
+        }
     }
 }

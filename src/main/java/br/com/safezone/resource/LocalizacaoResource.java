@@ -1,5 +1,6 @@
 package br.com.safezone.resource;
 
+import br.com.safezone.exception.ApiException;
 import br.com.safezone.model.Localizacao;
 import br.com.safezone.service.LocalizacaoService;
 import jakarta.inject.Inject;
@@ -20,47 +21,61 @@ public class LocalizacaoResource {
     @GET
     @Path("/listar")
     public Response listarTodasLocalizacoes() {
-        List<Localizacao> localizacoes = localizacaoService.listarTodos();
-        return Response.ok(localizacoes).build();
+        try {
+            List<Localizacao> localizacoes = localizacaoService.listarTodos();
+            return Response.ok(localizacoes).build();
+        }
+        catch (Exception e) {
+            throw new ApiException(e.getMessage(), Response.Status.BAD_REQUEST);
+        }
     }
 
     @GET
     @Path("/buscar/{id}")
     public Response buscarLocalizacaoPorId(@PathParam("id") Long id) {
-        Localizacao localizacao = localizacaoService.buscarPorId(id);
-        return Response.ok(localizacao).build();
+        try{
+            Localizacao localizacao = localizacaoService.buscarPorId(id);
+            return Response.ok(localizacao).build();
+        }catch (Exception e) {
+            throw new ApiException(e.getMessage(), Response.Status.BAD_REQUEST);
+        }
+
     }
 
     @POST
     @Path("/criar")
     public Response criarLocalizacao(Localizacao localizacao) {
-        try {
+        try{
             Localizacao nova = localizacaoService.criar(localizacao);
             return Response.status(Response.Status.CREATED).entity(nova).build();
-        } catch (IllegalArgumentException e) {
-            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+        }catch (Exception e) {
+            throw new ApiException(e.getMessage(), Response.Status.BAD_REQUEST);
         }
     }
 
     @PUT
     @Path("/atualizar/{id}")
     public Response atualizarLocalizacao(@PathParam("id") Long id, Localizacao localizacao) {
-        try {
+        try{
             Localizacao atualizada = localizacaoService.atualizar(id, localizacao);
             return Response.ok(atualizada).build();
-        } catch (IllegalArgumentException e) {
-            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+        }catch (Exception e) {
+            throw new ApiException(e.getMessage(), Response.Status.BAD_REQUEST);
         }
     }
 
     @DELETE
     @Path("/deletar/{id}")
     public Response deletarLocalizacao(@PathParam("id") Long id) {
-        if (localizacaoService.deletar(id)) {
-            return Response.noContent().build();
+        try{
+            if (localizacaoService.deletar(id)) {
+                return Response.noContent().build();
+            }
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity("Localização com ID " + id + " não encontrada")
+                    .build();
+        }catch (Exception e) {
+            throw new ApiException(e.getMessage(), Response.Status.BAD_REQUEST);
         }
-        return Response.status(Response.Status.NOT_FOUND)
-                .entity("Localização com ID " + id + " não encontrada")
-                .build();
     }
 }
