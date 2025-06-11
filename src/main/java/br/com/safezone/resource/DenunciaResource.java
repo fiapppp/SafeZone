@@ -74,8 +74,7 @@ public class DenunciaResource {
             Denuncia atualizada = service.atualizarStatus(
                     id,
                     dto.status,
-                    dto.observacaoResponsavel,
-                    dto.idUsuarioResponsavel
+                    dto.observacaoResponsavel
             );
             return Response.ok(atualizada).build();
         }

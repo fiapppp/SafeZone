@@ -19,5 +19,5 @@ public class ResgateDoacao extends PanacheEntity {
 
     @ManyToOne
     @JoinColumn(name = "id_doacao", nullable = false)
-    public Doacao recompensa;
+    public Doacao doacao;
 }

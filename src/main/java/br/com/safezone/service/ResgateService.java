@@ -11,9 +11,9 @@ import java.time.LocalDate;
 public class ResgateService {
 
     @Transactional
-    public ResgateDoacao resgatarPontos(Usuario usuario, Long recompensaId) {
-        Doacao recompensa = Doacao.findById(recompensaId);
-        if (recompensa == null || recompensa.status == 0) {
+    public ResgateDoacao resgatarPontos(Usuario usuario, Long doacaoId) {
+        Doacao doacao = Doacao.findById(doacaoId);
+        if (doacao == null || doacao.status == 0) {
             throw new IllegalArgumentException("Doacao inválida ou inativa");
         }
 
@@ -22,12 +22,36 @@ public class ResgateService {
         resgate.dataResgate = LocalDate.now();
         resgate.status = 1;
         resgate.usuario = usuario;
-        resgate.recompensa = recompensa;
+        resgate.doacao = doacao;
         resgate.persist();
 
         // Atualiza disponibilidade da recompensa
-        recompensa.quantidadeDisponivel -= 1;
-        recompensa.persist();
+        doacao.quantidadeDisponivel -= 1;
+        doacao.persist();
+
+        return resgate;
+    }
+
+    @Transactional
+    public ResgateDoacao resgatarConversao(Usuario usuario, Long recompensaId, int unidades) {
+        Doacao r = Doacao.findById(recompensaId);
+        if (r == null || r.quantidadeConversao == null || r.quantidadeConversao <= 0) {
+            throw new IllegalArgumentException("Doacao não disponível para conversão");
+        }
+        if (unidades < 1) {
+            throw new IllegalArgumentException("Unidades inválidas");
+        }
+        int disponivel = r.quantidadeConversao;
+        int aResgatar = Math.min(unidades, disponivel);
+        r.quantidadeConversao = disponivel - aResgatar;
+        // A persistência da Doacao acontece ao final da transação
+
+        ResgateDoacao resgate = new ResgateDoacao();
+        resgate.dataResgate = LocalDate.now();
+        resgate.status = 1;
+        resgate.usuario = usuario;
+        resgate.doacao = r;
+        resgate.persist();
 
         return resgate;
     }

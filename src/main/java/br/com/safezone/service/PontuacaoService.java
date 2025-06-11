@@ -16,14 +16,15 @@ public class PontuacaoService {
     private static final Map<Long, Integer> BASE_POINTS;
     static {
         BASE_POINTS = new HashMap<>();
-        BASE_POINTS.put(1L, 600); // Assédio ou Agressões
-        BASE_POINTS.put(2L, 550); // Furto e Roubo
-        BASE_POINTS.put(3L, 500); // Segurança e Acessibilidade
-        BASE_POINTS.put(4L, 400); // Vandalismo
-        BASE_POINTS.put(5L, 350); // Equipamentos danificados
-        BASE_POINTS.put(6L, 250); // Falta de Sinalização
-        BASE_POINTS.put(7L, 150); // Higiene e Limpeza
-        BASE_POINTS.put(8L, 100); // Venda Ambulante
+        BASE_POINTS.put(1L, 800); // Enchente
+        BASE_POINTS.put(2L, 640); // Queimada
+        BASE_POINTS.put(3L, 600); // Tsunami
+        BASE_POINTS.put(4L, 500); // Furacão
+        BASE_POINTS.put(5L, 450); // Erupção
+        BASE_POINTS.put(6L, 350); // Terremoto
+        BASE_POINTS.put(7L, 250); // Deslizamento
+        BASE_POINTS.put(8L, 200); // Tempestade
+        BASE_POINTS.put(9L, 180); // Tempestade
     }
 
     /**

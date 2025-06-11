@@ -8,12 +8,11 @@ import br.com.safezone.security.CurrentUser;
 import br.com.safezone.service.ResgateService;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+
+import static jakarta.ws.rs.core.Response.Status.CREATED;
 
 @Path("/api/resgate")
 @Produces(MediaType.APPLICATION_JSON)
@@ -32,14 +31,33 @@ public class ResgateResource {
     public Response resgatar(ResgateRequestDTO dto) {
         try{
             var usuario = currentUser.get();
-            ResgateDoacao resgate = resgateService.resgatarPontos(usuario, dto.idRecompensa);
+            ResgateDoacao resgate = resgateService.resgatarPontos(usuario, dto.idDoacao);
             ResgateResponseDTO resp = new ResgateResponseDTO();
             resp.id = resgate.id;
             resp.dataResgate = resgate.dataResgate;
             resp.status = resgate.status;
             resp.idUsuario = usuario.id;
-            resp.idRecompensa = resgate.recompensa.id;
-            return Response.status(Response.Status.CREATED).entity(resp).build();
+            resp.idDoacao = resgate.doacao.id;
+            return Response.status(CREATED).entity(resp).build();
+        }catch (Exception e) {
+            throw new ApiException(e.getMessage(), Response.Status.BAD_REQUEST);
+        }
+    }
+
+    @POST
+    @Path("/conversao/{doacaoId}")
+    @RolesAllowed("cidadao")
+    public Response resgatarConversao(@PathParam("doacaoId") Long recompensaId, @QueryParam("unidades") @DefaultValue("1") int unidades) {
+        try{
+            var usuario = currentUser.get();
+            ResgateDoacao resgate = resgateService.resgatarConversao(usuario, recompensaId, unidades);
+            ResgateResponseDTO resp = new ResgateResponseDTO();
+            resp.id = resgate.id;
+            resp.dataResgate = resgate.dataResgate;
+            resp.status = resgate.status;
+            resp.idUsuario = usuario.id;
+            resp.idDoacao = resgate.doacao.id;
+            return Response.status(CREATED).entity(resp).build();
         }catch (Exception e) {
             throw new ApiException(e.getMessage(), Response.Status.BAD_REQUEST);
         }

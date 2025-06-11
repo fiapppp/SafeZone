@@ -10,7 +10,7 @@ public class Doacao extends PanacheEntity {
     @Column(nullable = false)
     public Integer status;
 
-    @Column(name = "titulo", length = 255, nullable = false)
+    @Column(name = "titulo", nullable = false)
     public String titulo;
 
     @Column(name = "descricao", length = 4000)
@@ -27,6 +27,9 @@ public class Doacao extends PanacheEntity {
 
     @Column(name = "quantidade_disponivel", nullable = false)
     public Integer quantidadeDisponivel;
+
+    @Column(name = "quantidade_conversao")
+    public Integer quantidadeConversao;
 
     @ManyToOne
     @JoinColumn(name = "id_tipo_doacao")

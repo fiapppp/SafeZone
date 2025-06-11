@@ -7,5 +7,5 @@ public class ResgateResponseDTO {
     public LocalDate dataResgate;
     public Integer status;
     public Long idUsuario;
-    public Long idRecompensa;
+    public Long idDoacao;
 }

@@ -3,7 +3,7 @@ package br.com.safezone.exception;
 import jakarta.ws.rs.core.Response;
 
 /**
- * Permite encapsular mensagem e status HTTP.
+ * Encapsular mensagem e status HTTP.
  */
 public class ApiException extends RuntimeException {
     private final Response.Status status;

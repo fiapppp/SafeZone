@@ -32,8 +32,11 @@ public class DoacaoService {
         Doacao r = new Doacao();
         r.custoPontos = dto.custoPontos;
         r.dataValidade = dto.dataValidade;
+        r.titulo = dto.titulo;
         r.descricao = dto.descricao;
+        r.habilitadoConversao = dto.habilitadoConversao;
         r.quantidadeDisponivel = dto.quantidadeDisponivel;
+        r.quantidadeConversao = dto.quantidadeConversao;
         r.status = dto.status != null ? dto.status : 1;
         r.tipoDoacao = TipoDoacao.findById(dto.tipoDoacaoId);
         r.persist();
@@ -51,8 +54,11 @@ public class DoacaoService {
         }
         r.custoPontos = dto.custoPontos;
         r.dataValidade = dto.dataValidade;
+        r.titulo = dto.titulo;
         r.descricao = dto.descricao;
+        r.habilitadoConversao = dto.habilitadoConversao;
         r.quantidadeDisponivel = dto.quantidadeDisponivel;
+        r.quantidadeConversao = dto.quantidadeConversao;
         r.status = dto.status;
         r.tipoDoacao = TipoDoacao.findById(dto.tipoDoacaoId);
         return new DoacaoDTO(r);
@@ -67,5 +73,16 @@ public class DoacaoService {
         if (r != null) {
             r.delete();
         }
+    }
+
+    public Doacao buscarPorHabilitadoConversao(int flag) {
+        return Doacao.find("habilitadoConversao", flag).firstResult();
+    }
+
+    public List<DoacaoDTO> listarConversao() {
+        List<Doacao> lista = Doacao.find("quantidadeConversao > 0").list();
+        return lista.stream()
+                .map(r -> new DoacaoDTO(r))
+                .collect(Collectors.toList());
     }
 }

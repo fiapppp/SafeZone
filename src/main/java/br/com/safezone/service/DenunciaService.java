@@ -21,6 +21,11 @@ public class DenunciaService {
 
     @Inject
     OcorrenciaService ocorrenciaService;
+    @Inject
+    DoacaoService doacaoService;
+
+    @Inject
+    ResgateService resgateService;
 
     /**
      * Retorna todas denúncias de um usuário, com objetos associados.
@@ -144,12 +149,7 @@ public class DenunciaService {
      * Atualiza status e observação; registra conclusão e pontuação se validada.
      */
     @Transactional
-    public Denuncia atualizarStatus(
-            Long id,
-            Integer novoStatus,
-            String observacao,
-            Long idUsuarioResponsavel
-    ) {
+    public Denuncia atualizarStatus(Long id, Integer novoStatus, String observacao) {
         Denuncia denuncia = Denuncia.findById(id);
         if (denuncia == null) {
             throw new IllegalArgumentException("Denúncia não encontrada: " + id);
@@ -158,11 +158,41 @@ public class DenunciaService {
         // Atualização da denúncia
         denuncia.status = novoStatus;
         denuncia.observacaoResponsavel = observacao;
-        if (novoStatus == 2) { // validada
+        if (novoStatus == 3) { // validada
             denuncia.dataConclusao = LocalDate.now();
-            // gera pontuação para o usuário
-            pontuacaoService.concederPontos(denuncia);
+            // gera pontuação para o usuário se for o cidadão prejudicado
+            if(denuncia.cidadao_prejudicado != null && denuncia.cidadao_prejudicado.id > 0) {
+                pontuacaoService.concederPontos(denuncia);
+            }else{
+                // conversão de recompensa se houver apoiador
+                if (denuncia.cidadao_apoidador != null && denuncia.cidadao_apoidador.id > 0) {
+                    aplicarConversao(denuncia);
+                }
+            }
         }
         return denuncia;
+    }
+
+    /**
+     * Aplica conversão de recompensa gratuita ao cidadao_prejudicado
+     */
+    @Transactional
+    protected void aplicarConversao(Denuncia denuncia) {
+        // busca doacao habilitada para conversão
+        Doacao doacao = doacaoService.buscarPorHabilitadoConversao(1);
+        if (doacao == null) {
+            return; // nenhuma disponível
+        }
+        // determina unidades a converter
+        int unidades;
+        switch (denuncia.prioridade) {
+            case 2: unidades = 2; break; // média
+            case 3: unidades = 3; break; // alta
+            default: unidades = 1;      // baixa
+        }
+        // incrementa quantidade_conversao
+        doacao.quantidadeConversao = doacao.quantidadeConversao == null ? unidades
+                : doacao.quantidadeConversao + unidades;
+        doacao.persist();
     }
 }

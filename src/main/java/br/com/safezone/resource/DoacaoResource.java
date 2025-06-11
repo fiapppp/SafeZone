@@ -71,4 +71,18 @@ public class DoacaoResource {
             throw new ApiException(e.getMessage(), Response.Status.BAD_REQUEST);
         }
     }
+
+    /**
+     * Lista doacao com conversão disponível (>0)
+     */
+    @GET
+    @Path("/conversao")
+    @RolesAllowed({"cidadao", "funcionario", "admin"})
+    public List<DoacaoDTO> listarConversao() {
+        try{
+            return service.listarConversao();
+        }catch (Exception e) {
+            throw new ApiException(e.getMessage(), Response.Status.BAD_REQUEST);
+        }
+    }
 }
